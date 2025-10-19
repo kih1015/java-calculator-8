@@ -1,38 +1,19 @@
 package calculator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class AdditionExpression {
 
-    private final List<Delimiter> delimiterList = new ArrayList<>();
-    private final List<Operand> operandList = new ArrayList<>();
+    private final DelimiterList delimiterList;
+    private final OperandList operandList;
 
     public AdditionExpression(String rawCommand, Character[] defaultDelimiters) {
-        Arrays.stream(defaultDelimiters).forEach(delimiter -> delimiterList.add(new Delimiter(delimiter)));
+        this.delimiterList = new DelimiterList(defaultDelimiters);
         Parser parser = new Parser(rawCommand);
         parser.getCustomDelimiter()
-                .ifPresent(character -> delimiterList.add(new Delimiter(character)));
-        parseExpression(parser.getExpression());
+                .ifPresent(delimiterList::add);
+        this.operandList = new OperandList(parser.getExpression(), delimiterList.getDelimiterList());
     }
 
     public int sum() {
-        return operandList.stream()
-                .mapToInt(Operand::getOperand)
-                .sum();
-    }
-
-    private void parseExpression(String expression) {
-        StringBuilder builder = new StringBuilder();
-        builder.append('[');
-        delimiterList.forEach(delimiter -> builder.append(delimiter.getDelimiter()));
-        builder.append(']');
-        String regex = builder.toString();
-
-        String[] tokens = expression.split(regex);
-        Arrays.stream(tokens).forEach(token -> {
-            operandList.add(new Operand(token));
-        });
+        return operandList.sum();
     }
 }
