@@ -9,18 +9,18 @@ public class AdditionExpression {
     private static final String HEADER_START_STRING = "//";
     private static final String HEADER_END_STRING = "\\\\n";
 
-    private final List<Character> delimiterList = new ArrayList<>();
-    private final List<Integer> operandList = new ArrayList<>();
+    private final List<Delimiter> delimiterList = new ArrayList<>();
+    private final List<Operand> operandList = new ArrayList<>();
 
     public AdditionExpression(String rawCommand, Character[] defaultDelimiters) {
-        delimiterList.addAll(Arrays.asList(defaultDelimiters));
+        Arrays.stream(defaultDelimiters).forEach(delimiter -> delimiterList.add(new Delimiter(delimiter)));
         String expression = parseRawCommand(rawCommand);
         parseExpression(expression);
     }
 
     public int sum() {
         return operandList.stream()
-                .mapToInt(Integer::intValue)
+                .mapToInt(Operand::getOperand)
                 .sum();
     }
 
@@ -37,20 +37,20 @@ public class AdditionExpression {
         char customDelimiter = extractCustomDelimiter(header);
         validateCustomDelimiter(customDelimiter);
 
-        delimiterList.add(customDelimiter);
+        delimiterList.add(new Delimiter(customDelimiter));
         return expression;
     }
 
     private void parseExpression(String expression) {
         StringBuilder builder = new StringBuilder();
         builder.append('[');
-        delimiterList.forEach(builder::append);
+        delimiterList.forEach(delimiter -> builder.append(delimiter.getDelimiter()));
         builder.append(']');
         String regex = builder.toString();
 
         String[] tokens = expression.split(regex);
         Arrays.stream(tokens).forEach(token -> {
-            operandList.add(parseNumber(token));
+            operandList.add(new Operand(token));
         });
     }
 
@@ -69,23 +69,8 @@ public class AdditionExpression {
     }
 
     private void validateCustomDelimiter(char customDelimiter) {
-        if (delimiterList.contains(customDelimiter)) {
+        if (delimiterList.contains(new Delimiter(customDelimiter))) {
             throw new IllegalArgumentException("커스텀 구분자는 기본 구분자일 수 없습니다.");
-        }
-        if (Character.isDigit(customDelimiter)) {
-            throw new IllegalArgumentException("커스텀 구분자는 숫자일 수 없습니다.");
-        }
-    }
-
-    private int parseNumber(String token) {
-        try {
-            int parsed = Integer.parseInt(token);
-            if (parsed <= 0) {
-                throw new IllegalArgumentException("양수만 가능합니다.");
-            }
-            return parsed;
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("숫자 형식이 올바르지 않습니다.");
         }
     }
 }
