@@ -1,16 +1,9 @@
 package calculator;
 
-public class Delimiter {
+public record Delimiter(char delimiter) {
 
-    private final char delimiter;
-
-    public Delimiter(char delimiter) {
+    public Delimiter {
         validateNotNumber(delimiter);
-        this.delimiter = delimiter;
-    }
-
-    public char getDelimiter() {
-        return delimiter;
     }
 
     private void validateNotNumber(char delimiter) {

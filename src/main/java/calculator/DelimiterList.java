@@ -1,15 +1,14 @@
 package calculator;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class DelimiterList {
 
-    private final List<Delimiter> delimiterList = new ArrayList<>();
+    private final List<Delimiter> delimiterList;
 
-    public DelimiterList(Character[] defaultDelimiters) {
-        Arrays.stream(defaultDelimiters).forEach(delimiter -> delimiterList.add(new Delimiter(delimiter)));
+    public DelimiterList(List<Delimiter> defaultDelimiters) {
+        delimiterList = new ArrayList<>(defaultDelimiters);
     }
 
     public void add(Character delimiter) {
@@ -22,7 +21,7 @@ public class DelimiterList {
     public String toRegex() {
         StringBuilder builder = new StringBuilder();
         builder.append('[');
-        delimiterList.forEach(delimiter -> builder.append(delimiter.getDelimiter()));
+        delimiterList.forEach(delimiter -> builder.append(delimiter.delimiter()));
         builder.append(']');
         return builder.toString();
     }

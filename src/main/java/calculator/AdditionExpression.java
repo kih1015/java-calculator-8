@@ -1,5 +1,7 @@
 package calculator;
 
+import java.util.List;
+
 public class AdditionExpression {
 
     private static final String HEADER_START_STRING = "//";
@@ -8,7 +10,7 @@ public class AdditionExpression {
     private final DelimiterList delimiterList;
     private final OperandList operandList;
 
-    public AdditionExpression(String rawCommand, Character[] defaultDelimiters) {
+    public AdditionExpression(String rawCommand, List<Delimiter> defaultDelimiters) {
         this.delimiterList = new DelimiterList(defaultDelimiters);
         String expression = parse(rawCommand);
         this.operandList = new OperandList(expression, delimiterList.toRegex());
