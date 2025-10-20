@@ -19,7 +19,11 @@ public class DelimiterList {
         delimiterList.add(new Delimiter(delimiter));
     }
 
-    public List<Delimiter> getDelimiterList() {
-        return new ArrayList<>(delimiterList);
+    public String toRegex() {
+        StringBuilder builder = new StringBuilder();
+        builder.append('[');
+        delimiterList.forEach(delimiter -> builder.append(delimiter.getDelimiter()));
+        builder.append(']');
+        return builder.toString();
     }
 }

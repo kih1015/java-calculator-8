@@ -11,7 +11,7 @@ public class AdditionExpression {
     public AdditionExpression(String rawCommand, Character[] defaultDelimiters) {
         this.delimiterList = new DelimiterList(defaultDelimiters);
         String expression = parse(rawCommand);
-        this.operandList = new OperandList(expression, delimiterList.getDelimiterList());
+        this.operandList = new OperandList(expression, delimiterList.toRegex());
     }
 
     public int sum() {
